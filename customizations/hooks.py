@@ -1,9 +1,15 @@
-app_name = "customizations"
-app_title = "Custom Demo app"
-app_publisher = "MLBD"
-app_description = "Custom Demo app"
-app_email = "mlbd@gmail.com"
+app_name = "my_custom_app"
+app_title = "my_custom_app"
+app_publisher = "test"
+app_description = "test"
+app_email = "test@gmail.com"
 app_license = "unlicense"
+
+
+override_whitelisted_methods = {
+    "frappe.desk.query_report.run": "customizations.report.custom_report.run"
+}
+
 
 # Apps
 # ------------------
@@ -13,11 +19,11 @@ app_license = "unlicense"
 # Each item in the list will be shown as an app in the apps page
 # add_to_apps_screen = [
 # 	{
-# 		"name": "customizations",
-# 		"logo": "/assets/customizations/logo.png",
-# 		"title": "Custom Demo app",
-# 		"route": "/customizations",
-# 		"has_permission": "customizations.api.permission.has_app_permission"
+# 		"name": "my_custom_app",
+# 		"logo": "/assets/my_custom_app/logo.png",
+# 		"title": "my_custom_app",
+# 		"route": "/my_custom_app",
+# 		"has_permission": "my_custom_app.api.permission.has_app_permission"
 # 	}
 # ]
 
@@ -25,15 +31,15 @@ app_license = "unlicense"
 # ------------------
 
 # include js, css files in header of desk.html
-# app_include_css = "/assets/customizations/css/customizations.css"
-# app_include_js = "/assets/customizations/js/customizations.js"
+# app_include_css = "/assets/my_custom_app/css/my_custom_app.css"
+# app_include_js = "/assets/my_custom_app/js/my_custom_app.js"
 
 # include js, css files in header of web template
-# web_include_css = "/assets/customizations/css/customizations.css"
-# web_include_js = "/assets/customizations/js/customizations.js"
+# web_include_css = "/assets/my_custom_app/css/my_custom_app.css"
+# web_include_js = "/assets/my_custom_app/js/my_custom_app.js"
 
 # include custom scss in every website theme (without file extension ".scss")
-# website_theme_scss = "customizations/public/scss/website"
+# website_theme_scss = "my_custom_app/public/scss/website"
 
 # include js, css files in header of web form
 # webform_include_js = {"doctype": "public/js/doctype.js"}
@@ -51,7 +57,7 @@ app_license = "unlicense"
 # Svg Icons
 # ------------------
 # include app icons in desk
-# app_include_icons = "customizations/public/icons.svg"
+# app_include_icons = "my_custom_app/public/icons.svg"
 
 # Home Pages
 # ----------
@@ -75,49 +81,57 @@ app_license = "unlicense"
 
 # add methods and filters to jinja environment
 # jinja = {
-# 	"methods": "customizations.utils.jinja_methods",
-# 	"filters": "customizations.utils.jinja_filters"
+# 	"methods": "my_custom_app.utils.jinja_methods",
+# 	"filters": "my_custom_app.utils.jinja_filters"
 # }
 
 # Installation
 # ------------
 
-# before_install = "customizations.install.before_install"
-# after_install = "customizations.install.after_install"
+# before_install = "my_custom_app.install.before_install"
+# after_install = "my_custom_app.install.after_install"
 
 # Uninstallation
 # ------------
 
-# before_uninstall = "customizations.uninstall.before_uninstall"
-# after_uninstall = "customizations.uninstall.after_uninstall"
+# before_uninstall = "my_custom_app.uninstall.before_uninstall"
+# after_uninstall = "my_custom_app.uninstall.after_uninstall"
 
 # Integration Setup
 # ------------------
 # To set up dependencies/integrations with other apps
 # Name of the app being installed is passed as an argument
 
-# before_app_install = "customizations.utils.before_app_install"
-# after_app_install = "customizations.utils.after_app_install"
+# before_app_install = "my_custom_app.utils.before_app_install"
+# after_app_install = "my_custom_app.utils.after_app_install"
 
 # Integration Cleanup
 # -------------------
 # To clean up dependencies/integrations with other apps
 # Name of the app being uninstalled is passed as an argument
 
-# before_app_uninstall = "customizations.utils.before_app_uninstall"
-# after_app_uninstall = "customizations.utils.after_app_uninstall"
+# before_app_uninstall = "my_custom_app.utils.before_app_uninstall"
+# after_app_uninstall = "my_custom_app.utils.after_app_uninstall"
 
 # Desk Notifications
 # ------------------
 # See frappe.core.notifications.get_notification_config
 
-# notification_config = "customizations.notifications.get_notification_config"
+# notification_config = "my_custom_app.notifications.get_notification_config"
 
 # Permissions
 # -----------
 # Permissions evaluated in scripted ways
 
 # permission_query_conditions = {
+# 	"Event": "frappe.desk.doctype.event.event.get_permission_query_conditions",
+# }
+#
+# has_permission = {
+# 	"Event": "frappe.desk.doctype.event.event.has_permission",
+# }
+
+# DocType Class
 # 	"Event": "frappe.desk.doctype.event.event.get_permission_query_conditions",
 # }
 #
@@ -150,39 +164,39 @@ app_license = "unlicense"
 
 # scheduler_events = {
 # 	"all": [
-# 		"customizations.tasks.all"
+# 		"my_custom_app.tasks.all"
 # 	],
 # 	"daily": [
-# 		"customizations.tasks.daily"
+# 		"my_custom_app.tasks.daily"
 # 	],
 # 	"hourly": [
-# 		"customizations.tasks.hourly"
+# 		"my_custom_app.tasks.hourly"
 # 	],
 # 	"weekly": [
-# 		"customizations.tasks.weekly"
+# 		"my_custom_app.tasks.weekly"
 # 	],
 # 	"monthly": [
-# 		"customizations.tasks.monthly"
+# 		"my_custom_app.tasks.monthly"
 # 	],
 # }
 
 # Testing
 # -------
 
-# before_tests = "customizations.install.before_tests"
+# before_tests = "my_custom_app.install.before_tests"
 
 # Overriding Methods
 # ------------------------------
 #
 # override_whitelisted_methods = {
-# 	"frappe.desk.doctype.event.event.get_events": "customizations.event.get_events"
+# 	"frappe.desk.doctype.event.event.get_events": "my_custom_app.event.get_events"
 # }
 #
 # each overriding function accepts a `data` argument;
 # generated from the base implementation of the doctype dashboard,
 # along with any modifications made in other Frappe apps
 # override_doctype_dashboards = {
-# 	"Task": "customizations.task.get_dashboard_data"
+# 	"Task": "my_custom_app.task.get_dashboard_data"
 # }
 
 # exempt linked doctypes from being automatically cancelled
@@ -196,13 +210,13 @@ app_license = "unlicense"
 
 # Request Events
 # ----------------
-# before_request = ["customizations.utils.before_request"]
-# after_request = ["customizations.utils.after_request"]
+# before_request = ["my_custom_app.utils.before_request"]
+# after_request = ["my_custom_app.utils.after_request"]
 
 # Job Events
 # ----------
-# before_job = ["customizations.utils.before_job"]
-# after_job = ["customizations.utils.after_job"]
+# before_job = ["my_custom_app.utils.before_job"]
+# after_job = ["my_custom_app.utils.after_job"]
 
 # User Data Protection
 # --------------------
@@ -232,13 +246,5 @@ app_license = "unlicense"
 # --------------------------------
 
 # auth_hooks = [
-# 	"customizations.auth.validate"
+# 	"my_custom_app.auth.validate"
 # ]
-
-# Automatically update python controller files with type annotations for this app.
-# export_python_type_annotations = True
-
-# default_log_clearing_doctypes = {
-# 	"Logging DocType Name": 30  # days to retain logs
-# }
-
