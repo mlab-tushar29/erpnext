@@ -1,5 +1,5 @@
-app_name = "my_custom_app"
-app_title = "my_custom_app"
+app_name = "mes_customizations"
+app_title = "mes_customizations"
 app_publisher = "test"
 app_description = "test"
 app_email = "test@gmail.com"

@@ -51,13 +51,26 @@ def run(
             else:
                 # Custom logic for fetching report data
                 columns = [
-                    {"label": "Material Request", "fieldname": "name", "fieldtype": "Link",
-                     "options": "Material Request", "width": 200},
-                    {"label": "Purchase Invoice Status", "fieldname": "purchase_invoice_status", "fieldtype": "Data",
-                     "width": 150},
+                    {"label": "Material Request", "fieldname": "name", "fieldtype": "Link", "options": "Material Request", "width": 200},
+                    {"label": "Workflow State", "fieldname": "workflow_state", "fieldtype": "Data", "width": 150},
+                    {"label": "Title", "fieldname": "title", "fieldtype": "Data", "width": 200},
+                    {"label": "Company", "fieldname": "company", "fieldtype": "Link", "options": "Company", "width": 200},
+                    {"label": "Required By", "fieldname": "schedule_date", "fieldtype": "Date", "width": 120},
+                    {"label": "Set Target Warehouse", "fieldname": "set_warehouse", "fieldtype": "Link", "options": "Warehouse", "width": 200},
+                    {"label": "Status", "fieldname": "status", "fieldtype": "Data", "width": 150},
+                    {"label": "% Ordered", "fieldname": "per_ordered", "fieldtype": "Float", "width": 120},
+                    {"label": "% Received", "fieldname": "per_received", "fieldtype": "Float", "width": 120},
+                    {"label": "Purchase Invoice Status", "fieldname": "purchase_invoice_status", "fieldtype": "Data", "width": 150},
                 ]
                 res = []
-                material_requests = frappe.get_all("Material Request", fields=["name", "status"])
+                material_requests = frappe.get_all(
+                    "Material Request",
+                    fields=[
+                        "name", "workflow_state", "title", "company", "schedule_date",
+                        "set_warehouse", "status", "per_ordered",
+                        "per_received"
+                    ]
+                )
 
                 for mr in material_requests:
                     purchase_orders = frappe.get_all(
@@ -78,13 +91,21 @@ def run(
 
                     res.append({
                         "name": mr["name"],
+                        "workflow_state": mr["workflow_state"],
+                        "title": mr["title"],
+                        "company": mr["company"],
+                        "schedule_date": mr["schedule_date"],
+                        "set_warehouse": mr["set_warehouse"],
+                        "status": mr["status"],
+                        "per_ordered": mr["per_ordered"],
+                        "per_received": mr["per_received"],
                         "purchase_invoice_status": invoice_status,
                     })
 
                 result = {"columns": columns, "result": res}
 
-        except Exception:
-            frappe.log_error("Custom Report Error")
+        except Exception as e:
+            frappe.log_error(f"Custom Report Error: {str(e)}")
             raise
 
         result["add_total_row"] = report.add_total_row and not result.get("skip_total_row", False)
