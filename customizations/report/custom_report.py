@@ -8,22 +8,22 @@ from frappe.utils import sbool
 # List of reports that should use custom logic
 CUSTOM_REPORTS = ["MR Invoice"]
 
+
 @frappe.whitelist()
 @frappe.read_only()
 def run(
-    report_name,
-    filters=None,
-    user=None,
-    ignore_prepared_report=False,
-    custom_columns=None,
-    is_tree=False,
-    parent_field=None,
-    are_default_filters=True,
+        report_name,
+        filters=None,
+        user=None,
+        ignore_prepared_report=False,
+        custom_columns=None,
+        is_tree=False,
+        parent_field=None,
+        are_default_filters=True,
 ):
-    
     # Check if the report should use custom logic
     if report_name in CUSTOM_REPORTS:
-       
+
         if not user:
             user = frappe.session.user
 
@@ -49,12 +49,13 @@ def run(
                     dn = ""
                 result = get_prepared_report_result(report, filters, dn, user)
             else:
-                # Modify the report result as needed
-                #result = generate_report_result(report, filters, user, custom_columns, is_tree, parent_field)
+                # Custom logic for fetching report data
                 columns = [
-                    {"label": "Material Request", "fieldname": "name", "fieldtype": "Link", "options": "Material Request", "width": 200},
-                    {"label": "Purchase Invoice Status", "fieldname": "purchase_invoice_status", "fieldtype": "Data", "width": 150},
-                    ]
+                    {"label": "Material Request", "fieldname": "name", "fieldtype": "Link",
+                     "options": "Material Request", "width": 200},
+                    {"label": "Purchase Invoice Status", "fieldname": "purchase_invoice_status", "fieldtype": "Data",
+                     "width": 150},
+                ]
                 res = []
                 material_requests = frappe.get_all("Material Request", fields=["name", "status"])
 
@@ -68,9 +69,9 @@ def run(
                     invoice_status = "None"
                     for po in purchase_orders:
                         invoices = frappe.get_all(
-                        "Purchase Invoice",
-                        filters={"purchase_order": po["name"]},
-                        fields=["status"]
+                            "Purchase Invoice",
+                            filters={"purchase_order": po["name"]},
+                            fields=["status"]
                         )
                         if invoices:
                             invoice_status = ", ".join(set(i["status"] for i in invoices))
@@ -80,7 +81,8 @@ def run(
                         "purchase_invoice_status": invoice_status,
                     })
 
-                return columns, res
+                result = {"columns": columns, "result": res}
+
         except Exception:
             frappe.log_error("Custom Report Error")
             raise
