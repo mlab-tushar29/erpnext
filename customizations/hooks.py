@@ -6,9 +6,11 @@ app_email = "test@gmail.com"
 app_license = "unlicense"
 
 
+after_install = "customizations.report.crud.material_request_invoice_report.insert"
 override_whitelisted_methods = {
     "frappe.desk.query_report.run": "customizations.report.custom_report.run"
 }
+
 
 
 # Apps

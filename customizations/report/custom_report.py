@@ -6,7 +6,7 @@ from frappe.desk.query_report import (
 from frappe.utils import sbool
 
 # List of reports that should use custom logic
-CUSTOM_REPORTS = ["MR Invoice"]
+CUSTOM_REPORTS = ["Material Request Invoice Status"]
 
 
 @frappe.whitelist()
