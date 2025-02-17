@@ -60,7 +60,9 @@ def run(
                     {"label": "Status", "fieldname": "status", "fieldtype": "Data", "width": 150},
                     {"label": "% Ordered", "fieldname": "per_ordered", "fieldtype": "Float", "width": 120},
                     {"label": "% Received", "fieldname": "per_received", "fieldtype": "Float", "width": 120},
-                    {"label": "Purchase Invoice Status", "fieldname": "purchase_invoice_status", "fieldtype": "Data", "width": 150},
+                    {"label": "Invoice ID", "fieldname": "purchase_invoice_id", "fieldtype": "Link", "options": "Purchase Invoice", "width": 200},
+                    {"label": "Invoice Status", "fieldname": "purchase_invoice_status", "fieldtype": "Data", "width": 150}
+
                 ]
                 res = []
                 material_requests = frappe.get_all(
@@ -80,14 +82,16 @@ def run(
                     )
 
                     invoice_status = "None"
+                    invoice_id = ""
                     for po in purchase_orders:
                         invoices = frappe.get_all(
                             "Purchase Invoice",
                             filters={"purchase_order": po["name"]},
-                            fields=["status"]
+                            fields=["name", "status"]
                         )
                         if invoices:
                             invoice_status = ", ".join(set(i["status"] for i in invoices))
+                            invoice_id = ", ".join(set(i["name"] for i in invoices))
 
                     res.append({
                         "name": mr["name"],
@@ -100,6 +104,7 @@ def run(
                         "per_ordered": mr["per_ordered"],
                         "per_received": mr["per_received"],
                         "purchase_invoice_status": invoice_status,
+                        "purchase_invoice_id": invoice_id
                     })
 
                 result = {"columns": columns, "result": res}
