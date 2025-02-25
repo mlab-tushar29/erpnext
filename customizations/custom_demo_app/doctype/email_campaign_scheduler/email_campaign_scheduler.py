@@ -34,15 +34,13 @@ def create_email_campaign_scheduler_doctype():
     else:
         print("⏩ Email Campaign Scheduler DocType already exists.")
 
-    # Ensure only one document exists for this DocType
-    if not frappe.db.exists("Email Campaign Scheduler", "Email Campaign Scheduler"):
-        # Create the single document
+
+    records = frappe.db.get_all("Email Campaign Scheduler", limit=1)
+    if not records:
         scheduler_doc = frappe.get_doc({
             "doctype": "Email Campaign Scheduler",
-            "email_campaign_scheduled_time": "00:00:00"  # Default time
+            "email_campaign_scheduled_time": "14:00:00"
         })
         scheduler_doc.insert()
         frappe.db.commit()
-        print("✅ Single Email Campaign Scheduler document created.")
-    else:
-        print("⏩ Email Campaign Scheduler document already exists.")
+        print("✅ Record inserted successfully.")
