@@ -6,14 +6,9 @@ app_email = "test@gmail.com"
 app_license = "unlicense"
 
 
-after_install = "customizations.report.crud.material_request_invoice_report.insert"
+after_install = "customizations.install.after_install"
 override_whitelisted_methods = {
     "frappe.desk.query_report.run": "customizations.report.custom_report.run"
-}
-doc_events = {
-    "Scheduled Job Type": {
-        "before_save": "customizations.scheduler.scheduled_job_type.update_next_execution"
-    }
 }
 
 
