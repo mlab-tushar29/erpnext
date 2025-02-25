@@ -5,6 +5,7 @@ def create_email_campaign_scheduler_doctype():
         doc = frappe.get_doc({
             "doctype": "DocType",
             "module": "Custom Demo app",
+            "is_single": 1,
             "custom": 1,
             "fields": [
                 {
