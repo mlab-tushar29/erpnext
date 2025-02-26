@@ -2,8 +2,11 @@ import frappe
 from datetime import datetime
 from erpnext.crm.doctype.email_campaign.email_campaign import send_email_to_leads_or_contacts
 
+logger = frappe.logger("customizations")
+
 
 def send_campaign_email():
+    logger.info("Initiating check")
     records = frappe.get_all(
                     "Email Campaign Scheduler",
                     fields=[
@@ -20,4 +23,4 @@ def send_campaign_email():
 
     if current_time.hour == hour and current_time.minute == minute:
         send_email_to_leads_or_contacts()
-        frappe.log(f"✅ Emails sent successfully at the scheduled time {current_time}")
+        logger.info(f"✅ Emails sent successfully at the scheduled time {current_time}")
