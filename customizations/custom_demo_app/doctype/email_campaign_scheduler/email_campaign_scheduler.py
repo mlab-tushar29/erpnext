@@ -1,4 +1,8 @@
 import frappe
+import logging
+logger = frappe.logger("customizations")
+logger.setLevel(logging.DEBUG)
+
 
 def create_email_campaign_scheduler_doctype():
     # Check if the DocType already exists
@@ -43,4 +47,5 @@ def create_email_campaign_scheduler_doctype():
         })
         scheduler_doc.insert()
         frappe.db.commit()
+        logger.info("Initiating check")
         print("✅ Record inserted successfully.")

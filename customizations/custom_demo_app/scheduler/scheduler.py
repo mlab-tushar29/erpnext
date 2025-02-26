@@ -2,7 +2,9 @@ import frappe
 from datetime import datetime
 from erpnext.crm.doctype.email_campaign.email_campaign import send_email_to_leads_or_contacts
 
+import logging
 logger = frappe.logger("customizations")
+logger.setLevel(logging.DEBUG)
 
 
 def send_campaign_email():
