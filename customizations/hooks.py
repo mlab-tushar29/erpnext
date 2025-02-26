@@ -10,6 +10,13 @@ after_install = "customizations.install.after_install"
 override_whitelisted_methods = {
     "frappe.desk.query_report.run": "customizations.report.custom_report.run"
 }
+scheduler_events = {
+    "cron": {
+        "* * * * *": [
+            "customizations.custom_demo_app.scheduler.scheduler.send_campaign_email"
+        ]
+    }
+}
 
 
 
