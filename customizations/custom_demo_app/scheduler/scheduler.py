@@ -6,7 +6,6 @@ logger = frappe.logger("customizations")
 
 
 def send_campaign_email():
-    logger.info("Initiating check")
     records = frappe.get_all(
                     "Email Campaign Scheduler",
                     fields=[
@@ -19,6 +18,7 @@ def send_campaign_email():
         return
 
     current_time = datetime.now().time()
+    logger.info(f"Initiating check {current_time}")
     hour, minute, _ = map(int, str(records[0]['email_campaign_scheduled_time']).split(":"))
 
     if current_time.hour == hour and current_time.minute == minute:
