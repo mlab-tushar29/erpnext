@@ -286,9 +286,15 @@
                 const scrollable = document.querySelector(".dt-scrollable");
                 if (!scrollable) return;
 
+                // Check if there's an existing parent container
+                const tableContainer = scrollable.parentNode;
+
                 footer = document.createElement("div");
                 footer.className = "dt-footer";
-                scrollable.parentNode.appendChild(footer);
+                tableContainer.appendChild(footer);
+
+                // Force layout recalculation to ensure immediate visibility
+                footer.style.display = "block";
             }
 
             // Clear existing footer content
@@ -303,7 +309,6 @@
             // Get number of columns from the first data row
             const firstRow = document.querySelector(".dt-scrollable .dt-row");
             if (!firstRow) return;
-
             const columnCount = firstRow.querySelectorAll(".dt-cell").length;
 
             // Create cells for each column
@@ -318,8 +323,7 @@
                 content.className = `dt-cell__content dt-cell__content--col-${i}`;
 
                 // Set content based on the column
-                if (i === 2) {
-                    // Column 1 is the 'Total' label
+                if (i === 2) { // Column 1 is the 'Total' label
                     content.textContent = "Total";
                     content.setAttribute("title", "Total");
                 } else if (formattedTotals[i] !== undefined) {
@@ -337,6 +341,14 @@
             }
 
             footer.appendChild(totalRow);
+
+            // Make sure the footer is visible by triggering a reflow
+            footer.offsetHeight;
+
+            // Ensure the footer is visible in the DOM hierarchy
+            if (footer.parentNode) {
+                footer.parentNode.style.position = "relative";
+            }
         }
 
         // Watch for the appearance of the filter row
