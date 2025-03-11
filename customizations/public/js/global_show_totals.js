@@ -389,34 +389,9 @@
 
             try {
                 frappe.router.on('change', function() {
-                    setTimeout(() => {
-                        try {
-                            // Ensure frappe.get_route exists and returns an array
-                            if (!frappe.get_route || !Array.isArray(frappe.get_route())) {
-                                console.log("Invalid route or frappe.get_route() not ready");
-                                return;
-                            }
-
-                            let currentRoute = frappe.get_route();
-                            if (currentRoute && currentRoute.length >= 3 && currentRoute[2] === 'Report') {
-                                console.log("Report view detected, initializing totals calculator");
-
-                                // Set up filter input listeners
-                                setupFilterListeners();
-
-                                // Set up data change listeners
-                                setupDataChangeListeners();
-
-                                // Watch for filter row appearance
-                                watchForFilterRow();
-
-                                // Run the first calculation after the report has fully loaded
-                                setTimeout(calculateTotals, 1500);
-                            }
-                        } catch (err) {
-                            console.error("Error in router change handler:", err);
-                        }
-                    }, 1000);
+                    console.log("Route change detected, reloading page");
+                    // Reload the page when route changes
+                    window.location.reload();
                 });
                 console.log("Route change monitor set up successfully");
             } catch (err) {
