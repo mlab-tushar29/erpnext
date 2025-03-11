@@ -389,9 +389,13 @@
 
             try {
                 frappe.router.on('change', function() {
-                    console.log("Route change detected, reloading page");
+                    const route = frappe.get_route();
+                    if (route && route.length >= 3 && route[2] === 'Report') {
+                        console.log("Report route detected");
+                        window.location.reload();
+                    }
                     // Reload the page when route changes
-                    window.location.reload();
+
                 });
                 console.log("Route change monitor set up successfully");
             } catch (err) {
