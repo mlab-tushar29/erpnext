@@ -12,7 +12,7 @@
             }
 
             const currentRoute = frappe.get_route();
-            if (!(currentRoute && currentRoute.length >= 3 && currentRoute[1] === 'List' && currentRoute[2] === 'Report')) {
+            if (!(currentRoute && currentRoute.length >= 3 && currentRoute[2] === 'Report')) {
                 console.log("Not a report view, skipping totals calculation");
                 return;
             }
@@ -386,7 +386,7 @@
                             }
 
                             let currentRoute = frappe.get_route();
-                            if (currentRoute && currentRoute.length >= 3 && currentRoute[1] === 'List' && currentRoute[2] === 'Report') {
+                            if (currentRoute && currentRoute.length >= 3 && currentRoute[2] === 'Report') {
                                 console.log("Report view detected, initializing totals calculator");
 
                                 // Set up filter input listeners
@@ -437,7 +437,7 @@
                     return;
                 }
 
-                if (route && route.length >= 3 && route[1] === 'List' && route[2] === 'Report') {
+                if (route && route.length >= 3 && route[2] === 'Report') {
                     console.log("Already on a report view, initializing totals calculator");
 
                     setTimeout(() => {
