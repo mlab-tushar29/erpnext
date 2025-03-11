@@ -18,6 +18,10 @@ scheduler_events = {
     }
 }
 
+app_include_js = [
+    "/assets/customizations/js/global_show_totals.js"
+]
+
 
 
 
