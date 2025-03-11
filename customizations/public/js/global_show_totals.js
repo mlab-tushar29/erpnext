@@ -419,10 +419,10 @@
     }
 
     // Initialize when Frappe is ready
-    frappe.ready(function() {
-        console.log("Initializing global report totals calculator");
-        initReportTotals();
-    });
+    // frappe.ready(function() {
+    //     console.log("Initializing global report totals calculator");
+    //     initReportTotals();
+    // });
 
     // Also initialize when DOM is fully loaded (as a fallback)
     $(document).ready(function() {
