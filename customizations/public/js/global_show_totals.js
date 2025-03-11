@@ -520,8 +520,14 @@
         // Set a timeout to prevent infinite waiting
         setTimeout(function() {
             clearInterval(initializationInterval);
-            console.log("Timeout reached, attempting to initialize anyway");
-            initReportTotals();
-        }, 10000); // 10 second timeout
+            console.log("Timeout reached, checking if total row exists before initializing");
+            const totalRowExists = document.querySelector(".dt-row-totalRow") !== null;
+            if (!totalRowExists) {
+                console.log("Total row not found, initializing report totals");
+                initReportTotals();
+            } else {
+                console.log("Total row already exists, skipping initialization");
+            }
+        }, 10000);
     });
 })();
