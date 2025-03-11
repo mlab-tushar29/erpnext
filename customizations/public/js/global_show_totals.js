@@ -5,9 +5,14 @@
         let calculationInProgress = false;
 
         function calculateTotals() {
-            // Check if the current route is a report view
-            let currentRoute = frappe.get_route();
-            if (!currentRoute || currentRoute.length < 2 || currentRoute[1] !== "List" || currentRoute[2] !== "Report") {
+            // Check if frappe is defined and if the current route is a report view
+            if (!window.frappe || !window.frappe.get_route || !Array.isArray(frappe.get_route())) {
+                console.log("Frappe route not available yet, skipping totals calculation");
+                return;
+            }
+
+            const currentRoute = frappe.get_route();
+            if (!(currentRoute && currentRoute.length >= 3 && currentRoute[1] === 'List' && currentRoute[2] === 'Report')) {
                 console.log("Not a report view, skipping totals calculation");
                 return;
             }
@@ -313,7 +318,7 @@
                 content.className = `dt-cell__content dt-cell__content--col-${i}`;
 
                 // Set content based on the column
-                if (i === 1) {
+                if (i === 2) {
                     // Column 1 is the 'Total' label
                     content.textContent = "Total";
                     content.setAttribute("title", "Total");
@@ -332,20 +337,6 @@
             }
 
             footer.appendChild(totalRow);
-
-            // Add custom styling to make the totals row stand out
-            const style = document.createElement('style');
-            style.textContent = `
-                .dt-row-totalRow {
-                    font-weight: bold;
-                    background-color: #f8f8f8;
-                }
-                
-                .dt-row-totalRow .dt-cell {
-                    border-top: 1px solid #d1d8dd;
-                }
-            `;
-            document.head.appendChild(style);
         }
 
         // Watch for the appearance of the filter row
@@ -375,58 +366,171 @@
             }
         }
 
-        // Set up route change monitoring
-        frappe.router.on('change', function() {
-            setTimeout(() => {
-                let currentRoute = frappe.get_route();
-                if (currentRoute && currentRoute.length >= 3 && currentRoute[1] === 'List' && currentRoute[2] === 'Report') {
-                    console.log("Report view detected, initializing totals calculator");
+        // Set up route change monitoring - with safety checks
+        function setupRouteChangeMonitor() {
+            // Check if frappe and frappe.router exist
+            if (!window.frappe || !window.frappe.router) {
+                console.log("Frappe router not available yet, will try again later");
+                setTimeout(setupRouteChangeMonitor, 1000);
+                return;
+            }
 
-                    // Set up filter input listeners
-                    setupFilterListeners();
+            try {
+                frappe.router.on('change', function() {
+                    setTimeout(() => {
+                        try {
+                            // Ensure frappe.get_route exists and returns an array
+                            if (!frappe.get_route || !Array.isArray(frappe.get_route())) {
+                                console.log("Invalid route or frappe.get_route() not ready");
+                                return;
+                            }
 
-                    // Set up data change listeners
-                    setupDataChangeListeners();
+                            let currentRoute = frappe.get_route();
+                            if (currentRoute && currentRoute.length >= 3 && currentRoute[1] === 'List' && currentRoute[2] === 'Report') {
+                                console.log("Report view detected, initializing totals calculator");
 
-                    // Watch for filter row appearance
-                    watchForFilterRow();
+                                // Set up filter input listeners
+                                setupFilterListeners();
 
-                    // Run the first calculation after the report has fully loaded
-                    setTimeout(calculateTotals, 1500);
+                                // Set up data change listeners
+                                setupDataChangeListeners();
+
+                                // Watch for filter row appearance
+                                watchForFilterRow();
+
+                                // Run the first calculation after the report has fully loaded
+                                setTimeout(calculateTotals, 1500);
+                            }
+                        } catch (err) {
+                            console.error("Error in router change handler:", err);
+                        }
+                    }, 1000);
+                });
+                console.log("Route change monitor set up successfully");
+            } catch (err) {
+                console.error("Failed to set up route change monitor:", err);
+                // Try again later
+                setTimeout(setupRouteChangeMonitor, 2000);
+            }
+        }
+
+        // Check if we're already on a report page - with safety checks
+        function checkCurrentRoute() {
+            try {
+                // Ensure frappe is available and get_route method exists
+                if (!window.frappe) {
+                    console.log("Frappe not available yet, will try again later");
+                    setTimeout(checkCurrentRoute, 1000);
+                    return;
                 }
-            }, 1000);
-        });
 
-        // Initial setup if already on a report page
-        let currentRoute = frappe.get_route();
-        if (currentRoute && currentRoute.length >= 3 && currentRoute[1] === 'List' && currentRoute[2] === 'Report') {
-            console.log("Already on a report view, initializing totals calculator");
+                if (typeof frappe.get_route !== 'function') {
+                    console.log("frappe.get_route is not a function yet, will try again later");
+                    setTimeout(checkCurrentRoute, 1000);
+                    return;
+                }
 
-            setTimeout(() => {
-                // Set up filter input listeners
-                setupFilterListeners();
+                const route = frappe.get_route();
+                if (!Array.isArray(route)) {
+                    console.log("frappe.get_route() is not returning an array yet, will try again later");
+                    setTimeout(checkCurrentRoute, 1000);
+                    return;
+                }
 
-                // Set up data change listeners
-                setupDataChangeListeners();
+                if (route && route.length >= 3 && route[1] === 'List' && route[2] === 'Report') {
+                    console.log("Already on a report view, initializing totals calculator");
 
-                // Watch for filter row appearance
-                watchForFilterRow();
+                    setTimeout(() => {
+                        // Set up filter input listeners
+                        setupFilterListeners();
 
-                // Run the first calculation
-                calculateTotals();
-            }, 1500); // Longer initial delay to ensure all components are loaded
+                        // Set up data change listeners
+                        setupDataChangeListeners();
+
+                        // Watch for filter row appearance
+                        watchForFilterRow();
+
+                        // Run the first calculation
+                        calculateTotals();
+                    }, 1500); // Longer initial delay to ensure all components are loaded
+                }
+            } catch (err) {
+                console.error("Error checking current route:", err);
+                setTimeout(checkCurrentRoute, 1000);
+            }
+        }
+
+        // Setup the route change monitor
+        setTimeout(setupRouteChangeMonitor, 1000);
+
+        // Check the current route
+        setTimeout(checkCurrentRoute, 1000);
+    }
+
+    // Helper function to check if Frappe is loaded and properly initialized
+    function checkFrappeInitialized() {
+        console.log("Checking if Frappe is initialized...");
+
+        // Check if the frappe object exists in the window
+        if (typeof window.frappe === 'undefined') {
+            console.log("Frappe not loaded yet, waiting...");
+            setTimeout(checkFrappeInitialized, 500);
+            return false;
+        }
+
+        // Check if essential frappe methods exist
+        if (typeof frappe.get_route !== 'function') {
+            console.log("frappe.get_route not available yet, waiting...");
+            setTimeout(checkFrappeInitialized, 500);
+            return false;
+        }
+
+        try {
+            // Try to access get_route to see if it throws an error
+            const route = frappe.get_route();
+            if (route === null) {
+                console.log("frappe.get_route() returns null, waiting for initialization...");
+                setTimeout(checkFrappeInitialized, 500);
+                return false;
+            }
+
+            console.log("Frappe appears to be initialized properly");
+            return true;
+        } catch (error) {
+            console.log("Error when checking frappe.get_route(), waiting for proper initialization:", error);
+            setTimeout(checkFrappeInitialized, 500);
+            return false;
         }
     }
 
-    // Initialize when Frappe is ready
-    // frappe.ready(function() {
-    //     console.log("Initializing global report totals calculator");
-    //     initReportTotals();
-    // });
-
-    // Also initialize when DOM is fully loaded (as a fallback)
+    // Initialize when DOM is fully loaded
     $(document).ready(function() {
-        console.log("Document ready, initializing global report totals calculator");
-        initReportTotals();
+        console.log("Document ready, initializing the initialization sequence");
+
+        // Wait for frappe to be properly initialized before starting
+        let initializationInterval = setInterval(function() {
+            if (window.frappe && typeof frappe.get_route === 'function') {
+                try {
+                    // Test if frappe.get_route() works without error
+                    frappe.get_route();
+
+                    // If we get here, frappe is initialized
+                    clearInterval(initializationInterval);
+                    console.log("Frappe is fully initialized, starting report totals calculator");
+                    initReportTotals();
+                } catch (e) {
+                    console.log("Frappe not fully initialized yet, waiting...");
+                }
+            } else {
+                console.log("Waiting for Frappe to initialize...");
+            }
+        }, 1000);
+
+        // Set a timeout to prevent infinite waiting
+        setTimeout(function() {
+            clearInterval(initializationInterval);
+            console.log("Timeout reached, attempting to initialize anyway");
+            initReportTotals();
+        }, 10000); // 10 second timeout
     });
 })();
